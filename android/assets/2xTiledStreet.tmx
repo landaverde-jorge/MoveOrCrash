@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="27" height="96" tilewidth="20" tileheight="20" nextobjectid="1">
+ <tileset firstgid="1" name="greyTile" tilewidth="20" tileheight="20" tilecount="1" columns="1">
+  <image source="greyTile.png" trans="00ff00" width="20" height="20"/>
+ </tileset>
+ <tileset firstgid="2" name="streetTile" tilewidth="20" tileheight="20" tilecount="1" columns="1">
+  <image source="streetTile.png" trans="00ff00" width="20" height="20"/>
+ </tileset>
+ <tileset firstgid="3" name="whiteGreyTile" tilewidth="20" tileheight="20" tilecount="1" columns="1">
+  <image source="whiteGreyTile.png" trans="00ff00" width="20" height="20"/>
+ </tileset>
+ <tileset firstgid="4" name="Grass3" tilewidth="20" tileheight="20" tilecount="1" columns="1">
+  <image source="Grass3.png" trans="00ff00" width="20" height="20"/>
+ </tileset>
+ <tileset firstgid="5" name="treeTileBG2" tilewidth="20" tileheight="20" tilecount="4" columns="2">
+  <image source="treeTileBG2.png" trans="00ff00" width="40" height="40"/>
+ </tileset>
+ <tileset firstgid="9" name="bigTreeTile2" tilewidth="20" tileheight="20" tilecount="16" columns="4">
+  <image source="bigTreeTile2.png" trans="00ff00" width="80" height="80"/>
+ </tileset>
+ <tileset firstgid="25" name="NewStreetTile" tilewidth="20" tileheight="20" tilecount="1" columns="1">
+  <image source="NewStreetTile.png" trans="00ff00" width="20" height="20"/>
+ </tileset>
+ <tileset firstgid="26" name="NewStreetTile3" tilewidth="20" tileheight="20" tilecount="1" columns="1">
+  <image source="NewStreetTile3.png" trans="00ff00" width="20" height="20"/>
+ </tileset>
+ <tileset firstgid="27" name="whiteTile" tilewidth="20" tileheight="20" tilecount="1" columns="1">
+  <image source="whiteTile.png" trans="00ff00" width="20" height="20"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="27" height="96">
+  <data encoding="base64" compression="zlib">
+   eJztlskKwzAMRBNI9zXdaf//PzuBBowoRVZGPc1hLjn4EVtjv65pmhkyRzqkRZ6EtJ/1OrP+Alkmssb1V8ga2SBbMqv8nyE7ZI8ckOMP1qvye2v2a0iPnJAzciGz7FldkRtyRx4JrPLf7J6yWWXsnmaybLL7lc2yezeymSzbXctmnpftrncPIyzb3UyW7W4my67tvXsZd5T37o3OfDnv3rt3Sr/GeO9eBitzNr512eMbrC57fIPR5cz3y87Cv98v+WEdS37IYckP+f2SH9adl/yQP/Pyw3i/5IdxlvyQ0y/54TSW/JDDkh/y+yU/rDsv+SF/5uWH8X7JD+Ms+SGnX/LDaSz5IYclP+T3S35Yd17yQ/7Myw/j/ZIfxlnyQ06/yrwBfQLBCQ==
+  </data>
+ </layer>
+</map>
