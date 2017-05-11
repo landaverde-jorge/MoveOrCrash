@@ -2,24 +2,28 @@ package com.example.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 
-/**
- * Created by Mirola on 5/23/2016.
- */
-public class Car extends Sprite{
+import java.util.Random;
 
+
+public class Car extends Sprite implements Disposable {
+
+    public static final String[] CAR_MODELS = {"YellowCar.png", "BlueCar.png", "GreenCar.png", "GreyCar.png", "BlackCar.png", "BrownCar.png", "PurpleCar.png","OrangeCar.png" };
     private Vector2 position;
     private Vector2 velocity;
     private float width;
-    private float height;
+    private float length;
+    private Texture texture;
 
-    public Car(float x, float y, float width, float height, String carType) {
-        super(new Texture(carType));
+    public Car(Texture texture, float x, float y, float width, float length) {
+        super(texture);
+        this.texture = texture;
         this.position = new Vector2(x,y);
         this.width = width;
-        this.height = height;
+        this.length = length;
     }
 
     public void update(float dt){
@@ -48,8 +52,8 @@ public class Car extends Sprite{
 
     public boolean collidesWith(Car car) {
 
-        boolean bottom = this.position.x <= car.position.x && this.position.x + width >= car.position.x && this.position.y + height >= car.position.y && this.position.y <= car.position.y;
-        boolean top = this.position.x <= car.position.x && (this.position.x + width) >= car.position.x && this.position.y + height >= car.position.y + height && this.position.y <= car.position.y + height;
+        boolean bottom = this.position.x <= car.position.x && this.position.x + width >= car.position.x && this.position.y + length >= car.position.y && this.position.y <= car.position.y;
+        boolean top = this.position.x <= car.position.x && (this.position.x + width) >= car.position.x && this.position.y + length >= car.position.y + length && this.position.y <= car.position.y + length;
 
         return (bottom || top);
     }
@@ -59,4 +63,25 @@ public class Car extends Sprite{
     }
 
 
+    @Override
+    public float getWidth() {
+        return width;
+    }
+
+    public float getLength() {
+        return length;
+    }
+
+    @Override
+    public void dispose() {
+        this.texture.dispose();
+    }
+
+
+    public static Car makeRandom(float x, float y, float width, float length){
+        Random random = new Random();;
+        Texture texture = new Texture(CAR_MODELS[random.nextInt(CAR_MODELS.length)]);
+
+        return new Car(texture,x,y,width,length);
+    }
 }
