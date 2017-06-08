@@ -23,6 +23,7 @@ public class HUD {
     private float worldTimer;
     private float timeCount;
     private Integer score;
+    private String player;
 
     Label timerLabel;
     Label scoreLabel;
@@ -36,6 +37,7 @@ public class HUD {
         worldTimer = 0;
         timeCount = 0;
         score = 0;
+        player = "Player1";
         viewport = new FitViewport(GameConfiguration.WIDTH, GameConfiguration.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport,sb);
 
@@ -44,17 +46,20 @@ public class HUD {
         table.setFillParent(true);
 
        // timerLabel = new Label(String.format("%f",worldTimer),new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreLabel = new Label(String.format("%06d",score),new Label.LabelStyle(new BitmapFont(Gdx.files.internal("DemolitionCrack.fnt")), Color.WHITE));
+        scoreLabel = new Label(String.format("%06d",score),new Label.LabelStyle(new BitmapFont(Gdx.files.internal("mentha-rapture.fnt")), Color.BLACK));
        // timeLabel = new Label("TIME",new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         //sceneLabel = new Label("City",new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         //areaLabel = new Label("AREA",new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        playerLabel =  new Label("Player1",new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        playerLabel = new Label(player,new Label.LabelStyle(new BitmapFont(Gdx.files.internal("mentha-rapture.fnt")), Color.BLACK));
 
-        table.add(playerLabel).expandX().padTop(10);
+        //playerLabel =  new Label("Player1",new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+
+        table.add(playerLabel).expandX();
+        table.add(scoreLabel).expandX();
+
         table.add(areaLabel).expandX().padTop(10);
         table.add(timeLabel).expandX().padTop(10);
         table.row();
-        table.add(scoreLabel).expandX();
         table.add(sceneLabel).expandX();
         table.add(timerLabel).expandX();
 
@@ -86,6 +91,10 @@ public class HUD {
 //
 //    //  Gdx.app.log(TAG ,log);
 }
+    public void setScore(int newScore)
+    {
+        score = newScore;
+    }
 
 
 }

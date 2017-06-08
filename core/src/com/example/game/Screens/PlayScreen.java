@@ -192,13 +192,13 @@ public class PlayScreen implements Screen{
         if (position.y <= -GameConfiguration.HEIGHT) {
             position.y = GameConfiguration.HEIGHT - 20;
             bg.dispose();
-            bg = new Texture(GAME_AREAS[area]);
+            bg = new Texture(GAME_AREAS[0]);
         }
 
         if (position2.y <= -GameConfiguration.HEIGHT ) {
             position2.y = GameConfiguration.HEIGHT - 20;
             bg2.dispose();
-            bg2 = new Texture(GAME_AREAS[area]);
+            bg2 = new Texture(GAME_AREAS[0]);
         }
 
         time += dt;
@@ -217,7 +217,7 @@ public class PlayScreen implements Screen{
                    time = 0;
                    paddingTime = 0;
                    bg2.dispose();
-                   bg2 = new Texture("TiledStreetBridge.png");
+                   bg2 = new Texture("BridgetoNewArea1.png"); //had TiledStreetBridge.png
                    area++;
                 }
         }
@@ -308,7 +308,7 @@ public class PlayScreen implements Screen{
 
     @Override
     public void dispose() {
-
+        //game.dispose();
     }
 
     public void createNextWave(){
