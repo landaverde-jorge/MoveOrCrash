@@ -1,6 +1,7 @@
 package com.example.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -25,12 +26,16 @@ public class HomeScreen implements Screen{
     private Stage mStage;
     private TextureAtlas mTextureAtlas;
     private Skin mSkin;
+//    private Music homeMusic;
 
 
     public HomeScreen(MoveOrCrashGame game){
         this.game = game;
-        background =  new Texture("HomeScreenBackground.png");
+        background =  new Texture("HomeScreenTest.png");
         mStage = new Stage();
+//        homeMusic = MoveOrCrashGame.assetManager.get("Audio/Music/HomeScreenSong2.mp3",Music.class); TODO: Make homeScreen Music not overlap with inGame music
+//        homeMusic.setLooping(true);
+//        homeMusic.play();
 
     }
     @Override
@@ -39,39 +44,44 @@ public class HomeScreen implements Screen{
 
 //            mStage.clear();
 
-            mTextureAtlas = new TextureAtlas("plain_buttons.pack");
+            mTextureAtlas = new TextureAtlas("HomeScreenButtons.atlas");
             mSkin = new Skin(mTextureAtlas);
 
-            TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(); //** Button properties **//
-            style.up = mSkin.getDrawable("RedButton");
-            style.down = mSkin.getDrawable("GreenButton");
+            TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();//** Button properties **//
+            TextButton.TextButtonStyle style2 = new TextButton.TextButtonStyle();
+            style.up = mSkin.getDrawable("BlackCarButtonGO");
+            style2.up = mSkin.getDrawable("BlackCarButtonQuit");
             style.font = new BitmapFont();
+            style2.font = new BitmapFont();
 
-            TextButton button = new TextButton("Play", style);
-//            float buttonWidth = 300 * Gdx.graphics.getDensity();
-//            float buttonHegiht = 72 * Gdx.graphics.getDensity();
+            TextButton button = new TextButton("", style);
+            TextButton button2 = new TextButton("", style2);
 
 
-            button.setPosition(Gdx.graphics.getWidth()/2 - button.getWidth()/2, 200);
-//            button.setWidth(buttonWidth);       // TODO: remove hardcoded value
-//            button.setHeight(buttonHegiht);      // TODO: remove hardcoded value
+            button.setPosition(Gdx.graphics.getWidth()/4 - button.getWidth()/2, 450); // TODO: remove hardcoded value
+            button2.setPosition(Gdx.graphics.getWidth()/4 - button2.getWidth()/2, 390);// TODO: remove hardcoded value
 
             button.addListener(new InputListener() {
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                     Gdx.app.log("", "Play!"); //** Usually used to start Game, etc. **//
-//                    game.setScreen(new PlayScreen(game));
                     game.manager.nextScreen(new PlayScreen(game));
-//                    dispose();
+                    return true;
+                }
+            });
+            button2.addListener(new InputListener() {
+                public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                    Gdx.app.log("", "QUIT!"); //** Usually used to End Game **//
+                    Gdx.app.exit();
                     return true;
                 }
             });
 
             mStage.addActor(button);
+            mStage.addActor(button2);
 
 
             Gdx.input.setInputProcessor(mStage); //** stage set to pass input to button/actors **//
 
-            font = new BitmapFont(Gdx.files.internal("DemolitionCrackBlack.fnt"));
 
         }
 
@@ -85,7 +95,6 @@ public class HomeScreen implements Screen{
 
         game.batch.begin();
         game.batch.draw(background, 0, 0, GameConfiguration.WIDTH, GameConfiguration.HEIGHT);
-        font.draw(game.batch,"MOVE\nOR\nCRASH", GameConfiguration.WIDTH/2 - 110,GameConfiguration.HEIGHT/2 + 350);
 
         game.batch.end();
 
@@ -111,13 +120,13 @@ public class HomeScreen implements Screen{
 
     @Override
     public void hide() {
-        Gdx.app.log("HomeScreen", "hide!"); //** Usually used to start Game, etc. **//
+        Gdx.app.log("HomeScreen", "hide!");
         mStage.clear();
     }
 
     @Override
     public void dispose() {
-        Gdx.app.log("HomeScreen", "dispose!"); //** Usually used to start Game, etc. **//
+        Gdx.app.log("HomeScreen", "dispose!");
         mSkin.dispose();
         mTextureAtlas.dispose();
         mStage.dispose();

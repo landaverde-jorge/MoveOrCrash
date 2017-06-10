@@ -2,9 +2,8 @@ package com.example.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -50,6 +49,7 @@ public class PlayScreen implements Screen{
     private OrthographicCamera camera;
     private Viewport viewport;
     private HUD hud;
+    private int points;
 
     private Vector2 position;
     private Vector2 position2;  // TODO: better var name
@@ -81,28 +81,39 @@ public class PlayScreen implements Screen{
     private Stage mStage;
 
 
-    public PlayScreen(MoveOrCrashGame game){
-            this.game = game;
-            hud = new HUD(game.batch);
-            camera = new OrthographicCamera();
-            viewport = new FitViewport(GameConfiguration.WIDTH, GameConfiguration.HEIGHT, camera);
+    public static Music playMusic;
 
-            bg = new Texture(GAME_AREAS[0]);
-            bg2 =  new Texture(GAME_AREAS[0]);;
-            position = new Vector2(0,-20);
-            position2 = new Vector2(0, GameConfiguration.HEIGHT - 20);
 
-            playerCar = new Car(new Texture("RedSportsCar.png"),120f, 20f, 60f, 120f);   //TODO: Remove magic numbers!
 
-            enemies = new ArrayList<Car>();
+    public PlayScreen(MoveOrCrashGame game)
+    {
+        this.game = game;
+        hud = new HUD(game.batch);
+        points = 0;
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(GameConfiguration.WIDTH, GameConfiguration.HEIGHT, camera);
 
-            random = new RandomXS128();
+        bg = new Texture(GAME_AREAS[0]);
+        bg2 =  new Texture(GAME_AREAS[0]);;
+        position = new Vector2(0,-20);
+        position2 = new Vector2(0, GameConfiguration.HEIGHT - 20);
 
-            renderer = new ShapeRenderer();
+        playerCar = new Car(new Texture("RedSportsCar.png"),120f, 20f, 60f, 120f, 0);   //TODO: Remove magic numbers!
 
-            mStage = new Stage();
+        enemies = new ArrayList<Car>();
 
-        }
+        random = new RandomXS128();
+
+        renderer = new ShapeRenderer();
+
+        mStage = new Stage();
+
+//        playMusic = MoveOrCrashGame.assetManager.get("Audio/Music/InGameMusic.mp3",Music.class); //TODO: Pick Best Song
+        playMusic = MoveOrCrashGame.assetManager.get("Audio/Music/Home_InGameSong.mp3",Music.class);
+        playMusic.setLooping(true);
+        playMusic.play();
+
+    }
 
 
     @Override
@@ -111,36 +122,59 @@ public class PlayScreen implements Screen{
 
         Gdx.app.log("HomeScreen", "show");
 
-//            mStage.clear();
-
-        mTextureAtlas = new TextureAtlas("buttons.pack");
+        mTextureAtlas = new TextureAtlas("PlayScreenButtons.atlas");
         mSkin = new Skin(mTextureAtlas);
 
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(); //** Button properties **//
-        style.up = mSkin.getDrawable("PauseButton40pixls");
-        //style.down = mSkin.getDrawable("GreenButton");
+        TextButton.TextButtonStyle style2 = new TextButton.TextButtonStyle(); //** Button properties **//
+        TextButton.TextButtonStyle style3 = new TextButton.TextButtonStyle(); //** Button properties **//
+        style.up = mSkin.getDrawable("pauseButton");
+        style2.up = mSkin.getDrawable("RightButton");
+        style3.up = mSkin.getDrawable("LeftButton");
         style.font = new BitmapFont();
+        style2.font = new BitmapFont();
+        style3.font = new BitmapFont();
+
 
         TextButton button = new TextButton("", style);
-//            float buttonWidth = 300 * Gdx.graphics.getDensity();
-//            float buttonHegiht = 72 * Gdx.graphics.getDensity();
-
+        TextButton button2 = new TextButton("", style2);
+        TextButton button3 = new TextButton("", style3);
 
         button.setPosition(GameConfiguration.WIDTH - 60, GameConfiguration.HEIGHT - 60);
-//            button.setWidth(buttonWidth);       // TODO: remove hardcoded value
-//            button.setHeight(buttonHegiht);      // TODO: remove hardcoded value
+        button2.setPosition(GameConfiguration.WIDTH - 80, 40);
+        button3.setPosition(0, 40);
+
 
         button.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log("", "Play!"); //** Usually used to start Game, etc. **//
-//                    game.setScreen(new PlayScreen(game));
+                //game.pause();
                 game.manager.nextScreen(new PauseScreen(game));
-//                    dispose();
+                return true;
+            }
+        });
+        button2.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("", "Right"); //** Move Right **//
+                if(Gdx.input.justTouched() && !isGameOver) {
+                    playerCar.moveRight(120f);
+                }
+                return true;
+            }
+        });
+        button3.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("", "Left"); //** Move Left **//
+                if(Gdx.input.justTouched() && !isGameOver) {
+                    playerCar.moveLeft(120f);
+                }
                 return true;
             }
         });
 
         mStage.addActor(button);
+        mStage.addActor(button2);
+        mStage.addActor(button3);
 
 
         Gdx.input.setInputProcessor(mStage); //** stage set to pass input to button/actors **//
@@ -174,19 +208,14 @@ public class PlayScreen implements Screen{
         if (isGameOver) {
             enemies.clear();
             distanceUntilNextWave = 0;
-            return;
+            game.setScreen(new HomeScreen((MoveOrCrashGame) game));
+            dispose();
         }
-
-        //hud.updateTimer(dt);
-
 
         // bg speed (aka player speed)
         float dy =  playerSpeed * dt;
         position.y = position.y - dy;
         position2.y = position2.y - dy;
-
-
-
 
 //        //bg loop stuff
         if (position.y <= -GameConfiguration.HEIGHT) {
@@ -222,10 +251,7 @@ public class PlayScreen implements Screen{
                 }
         }
 
-
-
         playerSpeed = -100f * enemyVelocity;
-
 
         for(int i = 0; i < enemies.size() && !isGameOver; i++) {
 
@@ -233,12 +259,14 @@ public class PlayScreen implements Screen{
             car.update(dt);
             isGameOver = playerCar.collidesWith(car);
             if(car.getPosition().y + 120 < 0) {
+                points = car.getWaveType() * (area+1) * level;
+                hud.updateScore(points);
                 enemies.remove(car);
                 car.dispose();
             }
         }
 
-        String log = String.format("Time: %f Area: %d Level: %d Speed: %f CarSpacing: %d, distanceUntilNextWave: %d", time, area, level, enemyVelocity, carSpacing, distanceUntilNextWave);
+        String log = String.format("Points: %d Time: %f Area: %d Level: %d Speed: %f CarSpacing: %d, distanceUntilNextWave: %d", points, time, area, level, enemyVelocity, carSpacing, distanceUntilNextWave);
         Gdx.app.log(TAG, log);
     }
 
@@ -248,12 +276,8 @@ public class PlayScreen implements Screen{
 
         update(delta);
 
-
-
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-
 
         game.batch.setProjectionMatrix(camera.combined);
 
@@ -263,9 +287,6 @@ public class PlayScreen implements Screen{
 
         game.batch.draw(playerCar,playerCar.getPosition().x, playerCar.getPosition().y);
 
-//        Gdx.app.log("", "" + (position.y - position2.y));
-//
-//
 //        //Draws all the enemy cars in the enemies array list.
         for(Car car : enemies) {
             game.batch.draw(car, car.getPosition().x, car.getPosition().y);
@@ -293,7 +314,7 @@ public class PlayScreen implements Screen{
 
     @Override
     public void pause() {
-
+        //game.manager.nextScreen(new PauseScreen(game));
     }
 
     @Override
@@ -308,7 +329,8 @@ public class PlayScreen implements Screen{
 
     @Override
     public void dispose() {
-        //game.dispose();
+        mStage.dispose();
+        playMusic.dispose();
     }
 
     public void createNextWave(){
@@ -318,6 +340,8 @@ public class PlayScreen implements Screen{
         if(distanceUntilNextWave <= 0) {
 
             int waveType = random.nextInt(6); //TODO: remove magic number!
+            int waveOfOne = 1;
+            int waveOfTwo = 2;
 
             float y = GameConfiguration.HEIGHT;
 
@@ -327,7 +351,7 @@ public class PlayScreen implements Screen{
                 case 0: {
                     Car car = null;
 
-                    car = Car.makeRandom(LEFT_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(LEFT_LANE, y, 60f, 120f, waveOfOne);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
                     break;
@@ -335,7 +359,7 @@ public class PlayScreen implements Screen{
                 case 1: {
                     Car car = null;
 
-                    car = Car.makeRandom(MID_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(MID_LANE, y, 60f, 120f, waveOfOne);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
                     break;
@@ -343,7 +367,7 @@ public class PlayScreen implements Screen{
                 case 2: {
                     Car car = null;
 
-                    car = Car.makeRandom(RIGHT_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(RIGHT_LANE, y, 60f, 120f, waveOfOne);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
                     break;
@@ -351,33 +375,33 @@ public class PlayScreen implements Screen{
                 case 3: {
                     Car car = null;
 
-                    car = Car.makeRandom(MID_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(MID_LANE, y, 60f, 120f, waveOfTwo);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
 
-                    car = Car.makeRandom(RIGHT_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(RIGHT_LANE, y, 60f, 120f, waveOfTwo);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
                     break;
                 }
                 case 4: {
                     Car car = null;
-                    car = Car.makeRandom(MID_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(MID_LANE, y, 60f, 120f, waveOfTwo);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
 
-                    car = Car.makeRandom(LEFT_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(LEFT_LANE, y, 60f, 120f, waveOfTwo);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
                     break;
                 }
                 case 5: {
                     Car car = null;
-                    car = Car.makeRandom(RIGHT_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(RIGHT_LANE, y, 60f, 120f, waveOfTwo);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
 
-                    car = Car.makeRandom(LEFT_LANE, y, 60f, 120f);
+                    car = Car.makeRandom(LEFT_LANE, y, 60f, 120f, waveOfTwo);
                     car.setVelocity(new Vector2(0, enemyVelocity));
                     enemies.add(car);
                     break;

@@ -12,18 +12,21 @@ import java.util.Random;
 public class Car extends Sprite implements Disposable {
 
     public static final String[] CAR_MODELS = {"YellowCar.png", "BlueCar.png", "GreenCar.png", "GreyCar.png", "BlackCar.png", "BrownCar.png", "PurpleCar.png","OrangeCar.png" };
+    private static int wt;
     private Vector2 position;
     private Vector2 velocity;
     private float width;
     private float length;
     private Texture texture;
 
-    public Car(Texture texture, float x, float y, float width, float length) {
+    public Car(Texture texture, float x, float y, float width, float length, int waveT)
+    {
         super(texture);
         this.texture = texture;
         this.position = new Vector2(x,y);
         this.width = width;
         this.length = length;
+        this.wt = waveT;
     }
 
     public void update(float dt){
@@ -35,6 +38,7 @@ public class Car extends Sprite implements Disposable {
     public void setVelocity(Vector2 velocity){
         this.velocity = velocity;
     }
+    public int getWaveType(){return this.wt;}
 
     public void moveLeft(float dx){
         position.x -= dx;
@@ -78,10 +82,10 @@ public class Car extends Sprite implements Disposable {
     }
 
 
-    public static Car makeRandom(float x, float y, float width, float length){
+    public static Car makeRandom(float x, float y, float width, float length, int wave){
         Random random = new Random();;
         Texture texture = new Texture(CAR_MODELS[random.nextInt(CAR_MODELS.length)]);
 
-        return new Car(texture,x,y,width,length);
+        return new Car(texture,x,y,width,length, wave);
     }
 }
