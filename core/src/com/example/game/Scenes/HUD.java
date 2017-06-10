@@ -24,6 +24,7 @@ public class HUD {
     private float timeCount;
     private Integer score;
     private String player;
+    private Integer hScore;
 
     Label timerLabel;
     Label scoreLabel;
@@ -91,9 +92,10 @@ public class HUD {
 //
 //    //  Gdx.app.log(TAG ,log);
 }
-    public void setScore(int newScore)
+    public void updateScore(int newScore)
     {
-        score = newScore;
+        score += newScore;
+        scoreLabel.setText(String.format("%06d",score));
     }
 
 

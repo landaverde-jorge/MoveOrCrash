@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,54 +18,64 @@ import com.example.game.MoveOrCrashGame;
 
 public class PauseScreen implements Screen{
 
-    public MoveOrCrashGame game;
+    private MoveOrCrashGame game;
+
+    private Texture background;
+
+    BitmapFont font;
+
+    private Stage mStage;
     private TextureAtlas mTextureAtlas;
     private Skin mSkin;
-    private Stage mStage;
 
     public PauseScreen (MoveOrCrashGame game){
         this.game = game;
-
+        background =  new Texture("PauseScreenTest.png");
         mStage = new Stage();
-
     }
 
 
 
     @Override
     public void show() {
-        Gdx.app.log("HomeScreen", "show");
+        Gdx.app.log("PauseScreen", "show");
 
-//            mStage.clear();
-
-        mTextureAtlas = new TextureAtlas("plain_buttons.pack");
+        mTextureAtlas = new TextureAtlas("HomeScreenButtons.atlas");
         mSkin = new Skin(mTextureAtlas);
 
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(); //** Button properties **//
-        style.up = mSkin.getDrawable("RedButton");
-        style.down = mSkin.getDrawable("GreenButton");
+        TextButton.TextButtonStyle style2 = new TextButton.TextButtonStyle(); //** Button properties **//
+        style.up = mSkin.getDrawable("BlackCarButtonResume");
+        style2.up = mSkin.getDrawable("BlackCarButtonQuit");
         style.font = new BitmapFont();
+        style2.font = new BitmapFont();
 
-        TextButton button = new TextButton("Resume", style);
-//            float buttonWidth = 300 * Gdx.graphics.getDensity();
-//            float buttonHegiht = 72 * Gdx.graphics.getDensity();
+        TextButton button = new TextButton("", style);
+        TextButton button2 = new TextButton("", style2);
 
 
-        button.setPosition(GameConfiguration.WIDTH/2 - button.getWidth()/2, GameConfiguration.HEIGHT/2 - button.getHeight()/2);
-//            button.setWidth(buttonWidth);       // TODO: remove hardcoded value
-//            button.setHeight(buttonHegiht);      // TODO: remove hardcoded value
+
+        button.setPosition(GameConfiguration.WIDTH/2 - button.getWidth()/2, GameConfiguration.HEIGHT/2);          // TODO: remove hardcoded value
+        button2.setPosition(GameConfiguration.WIDTH/2 - button.getWidth()/2, (GameConfiguration.HEIGHT/2) - 60);  // TODO: remove hardcoded value
 
         button.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                Gdx.app.log("", "Play!"); //** Usually used to start Game, etc. **//
-//                    game.setScreen(new PlayScreen(game));
+                Gdx.app.log("", "Resume!"); //** Usually used to start Game, etc. **//
                 game.manager.previousScreen();
-//                    dispose();
+                return true;
+            }
+        });
+        button2.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log("", "Quit!"); //** Usually used to start Game, etc. **//
+                game.setScreen(new HomeScreen((MoveOrCrashGame) game));
+                dispose();
                 return true;
             }
         });
 
         mStage.addActor(button);
+        mStage.addActor(button2);
 
 
         Gdx.input.setInputProcessor(mStage); //** stage set to pass input to button/actors **//
@@ -74,9 +85,16 @@ public class PauseScreen implements Screen{
     @Override
     public void render(float delta) {
 
-//        Gdx.gl.glClearColor(1, 0, 0, 0.5f);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT |  GL20.GL_ALPHA );
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         mStage.act();
+
+        game.batch.begin();
+        game.batch.draw(background, 0, 0, GameConfiguration.WIDTH, GameConfiguration.HEIGHT);
+
+        game.batch.end();
+
         mStage.draw();
 
     }
@@ -103,6 +121,7 @@ public class PauseScreen implements Screen{
 
     @Override
     public void dispose() {
-
+        mStage.dispose();
+        PlayScreen.playMusic.dispose();
     }
 }
