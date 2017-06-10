@@ -56,7 +56,7 @@ public class PauseScreen implements Screen{
 
 
         button.setPosition(GameConfiguration.WIDTH/2 - button.getWidth()/2, GameConfiguration.HEIGHT/2);          // TODO: remove hardcoded value
-        button2.setPosition(GameConfiguration.WIDTH/2 - button.getWidth()/2, (GameConfiguration.HEIGHT/2) - 60);  // TODO: remove hardcoded value
+        button2.setPosition(GameConfiguration.WIDTH/2 - button.getWidth()/2, (GameConfiguration.HEIGHT/2) - 100);  // TODO: remove hardcoded value
 
         button.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -69,6 +69,7 @@ public class PauseScreen implements Screen{
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log("", "Quit!"); //** Usually used to start Game, etc. **//
                 game.setScreen(new HomeScreen((MoveOrCrashGame) game));
+                PlayScreen.playMusic.dispose();
                 dispose();
                 return true;
             }
@@ -122,6 +123,5 @@ public class PauseScreen implements Screen{
     @Override
     public void dispose() {
         mStage.dispose();
-        PlayScreen.playMusic.dispose();
     }
 }

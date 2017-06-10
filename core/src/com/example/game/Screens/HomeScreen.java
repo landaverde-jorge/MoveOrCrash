@@ -59,7 +59,7 @@ public class HomeScreen implements Screen{
 
 
             button.setPosition(Gdx.graphics.getWidth()/4 - button.getWidth()/2, 450); // TODO: remove hardcoded value
-            button2.setPosition(Gdx.graphics.getWidth()/4 - button2.getWidth()/2, 390);// TODO: remove hardcoded value
+            button2.setPosition(Gdx.graphics.getWidth()/4 - button2.getWidth()/2, 350);// TODO: remove hardcoded value
 
             button.addListener(new InputListener() {
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
